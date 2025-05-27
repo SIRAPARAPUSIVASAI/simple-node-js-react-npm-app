@@ -70,10 +70,11 @@ pipeline {
             steps {
                 script {
                     // Extract version from pom.xml
-                    def version = sh(
-                        script: "./npm  help:evaluate -Dexpression=project.version -q -DforceStdout",
-                        returnStdout: true
-                    ).trim()
+                    // def version = sh(
+                       // script: "./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout",
+                       // returnStdout: true
+                 //).trim()
+                
 
                     // Choose repository based on version
                     def repository = version.contains('SNAPSHOT') ? 'maven-snapshots' : 'maven-releases'
