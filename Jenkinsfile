@@ -6,7 +6,7 @@ pipeline {
 
         stage('install deps') {
             steps {
-                sh 'apt-get install npm -y'
+                sh 'apt-get update && apt-get install npm -y'
             }
         }
         stage('Build') {
