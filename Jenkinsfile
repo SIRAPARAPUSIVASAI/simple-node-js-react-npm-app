@@ -21,7 +21,7 @@ pipeline {
                 sh 'npm install --save-dev jest-junit'
             }
         }
-        
+
         stage('Build') {
             steps {
                 sh 'npm run build'
@@ -38,5 +38,27 @@ pipeline {
                 junit 'junit.xml'
             }
         }
+               stage('CodeScanning'){
+
+            environment {
+                SONAR_HOME = tool name: 'sonar-scan' 
+            }
+
+            steps {
+                withSonarQubeEnv('sonar-qube'){
+                    sh '''$SONAR_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=APP \
+                        -Dsonar.projectName=pyinstallerapp \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dsonar.sources=. \
+                        -Dsonar.sourceEncoding=UTF-8
+                    '''
+                }
+            }
+               }
     }
 }
+        
+
+
+                    
