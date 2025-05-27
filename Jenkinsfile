@@ -4,9 +4,15 @@ pipeline {
 
     stages {
 
-        stage('install deps') {
+        stage('install  os deps') {
             steps {
                 sh 'apt-get update && apt-get install npm -y'
+            }
+        }
+
+        stage('install node deps') {
+            steps {
+                sh 'npm install'
             }
         }
         stage('Build') {
