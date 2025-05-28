@@ -38,6 +38,18 @@ pipeline {
                 junit 'junit.xml'
             }
         }
+        steps {
+                withSonarQubeEnv('SonarServer') {
+              
+                    sh '''${SONAR_HOME}/bin/sonar-scanner \
+                    -Dsonar.projectKey=NODEAPP \
+                    -Dsonar.projectName=simple-node-app \
+                    -Dsonar.sources=. \
+                    -Dsonar.analysis.mode=publish \
+                    -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}
+                    '''
+                }
+        }
     }
 }
 
