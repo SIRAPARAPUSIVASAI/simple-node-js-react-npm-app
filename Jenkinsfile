@@ -67,18 +67,15 @@ pipeline {
         }
         stage('Upload to Nexus') {
             steps {
-                nexusArtifactUploader(
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    nexusUrl: "http://nexus:8081/",
-                    groupId: 'com.example',
-                    version: '0.1.0',
-                    repository: 'my-node-app',
-                    credentialsId: "nexus-creds}",
-                    artifacts: [
-                        [artifactId: 'my-node-app', classifier: '', file: 'dist/my-node-app.tar.gz', type: 'tar.gz']
-                    ]
-                )
+                def version = '0.1.0'
+                def projectName = 'my-node-app'
+                def artifactFile = "${projectName}-${version}.tar.gz"
+                def groupPath = 'com/example/my-node-app'
+                def nexusUrl = 'http://nexus:8081'
+                def repository = 'python-app'
+                def credentialsId = 'nexus-creds'
+
+                
                  // Compress project source
                         sh "tar -czf ${artifactFile} sources/*.json"
 
