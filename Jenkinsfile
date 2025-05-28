@@ -67,10 +67,10 @@ pipeline {
         }
         stage('Upload to Nexus') {
             steps {
-                def version = '0.1.0'
-                def projectName = 'my-node-app'
+                def version = '13'
+                def projectName = 'python-app'
                 def artifactFile = "${projectName}-${version}.tar.gz"
-                def groupPath = 'com/example/my-node-app'
+                def groupPath = 'com/example/python-app'
                 def nexusUrl = 'http://nexus:8081'
                 def repository = 'python-app'
                 def credentialsId = 'nexus-creds'
