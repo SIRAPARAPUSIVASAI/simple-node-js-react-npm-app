@@ -38,7 +38,11 @@ pipeline {
                 junit 'junit.xml'
             }
         }
-        steps {
+        stage("CodeScanning"){
+            environment {
+               SONAR_HOME = tool 'sonar-scan'
+            }
+            steps {
                 withSonarQubeEnv('SonarServer') {
               
                     sh '''${SONAR_HOME}/bin/sonar-scanner \
@@ -49,9 +53,13 @@ pipeline {
                     -Dsonar.projectVersion=${BUILD_NUMBER}-${GIT_COMMIT_SHORT}
                     '''
                 }
+            }
         }
     }
 }
+        
+    
+
 
 
 
