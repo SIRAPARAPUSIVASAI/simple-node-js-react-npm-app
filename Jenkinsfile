@@ -65,49 +65,43 @@ pipeline {
                 }
             }
         }
-        stage('Upload Artifact to Nexus') {
+        stage('Upload to Nexus') {
             steps {
-                script {
-                    // Extract version from pom.xml
-                   // def version = sh(
-                        //script: "./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout",
-                       // returnStdout: true
-                    //).trim()
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "http://nexus:8081/",
+                    groupId: 'com.example',
+                    version: '0.1.0',
+                    repository: 'my-node-app',
+                    credentialsId: "nexus-creds}",
+                    artifacts: [
+                        [artifactId: 'my-node-app', classifier: '', file: 'dist/my-node-app.tar.gz', type: 'tar.gz']
+                    ]
+                )
+                 // Compress project source
+                        sh "tar -czf ${artifactFile} sources/*.json"
 
-                    // Choose repository based on version
-                    //def repository = version.contains('SNAPSHOT') ? 'maven-snapshots' : 'maven-releases'
+                        // Get credentials from Jenkins (username and password)
+                        withCredentials([usernamePassword(credentialsId: credentialsId, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                            def uploadUrl = "${nexusUrl}/repository/${repository}/${groupPath}/${version}/${artifactFile}"
+                            
+                            // Upload using curl
+                            sh """
+                                curl -u $NEXUS_USER:$NEXUS_PASS --upload-file ${artifactFile} ${uploadUrl}
 
-                    // Derive artifactId and JAR file
-                    def jarFile = sh(
-                        script: "ls target/*.jar | grep simple-node-js-react-npm-app| head -n 1",
-                        returnStdout: true
-                    ).trim()
-
-                    def artifactId = 'simple-node-js-react-npm-app' // This must match the filename and pom.xml <artifactId>
-
-                    // Upload to Nexus
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: 'nexus:8081',
-                        groupId: 'com.example',
-                        version: '1.0.0',
-                        repository: repository,
-                        credentialsId: 'nexus-creds',
-                        artifacts: [
-                            [
-                                artifactId: artifactId,
-                                classifier: '',
-                                file: jarFile,
-                                type: 'jar'
-                            ]
-                        ]
-                    )
-                }
+                            """
+                        }
             }
         }
     }
 }
+                        
+            
+    
+
+
+
         
                 
         
