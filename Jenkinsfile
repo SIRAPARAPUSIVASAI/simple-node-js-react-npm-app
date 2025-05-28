@@ -65,52 +65,28 @@ pipeline {
                 }
             }
         }
-        
-         stage('Upload Artifact to Nexus') {
+        stage('Upload to Nexus') {
             steps {
-                script {
-                    // Extract version from pom.xml
-                     //def version = sh(
-                        //script: "./npm help:evaluate -Dexpression=project.version -q -DforceStdout",
-                       // returnStdout: true
-                 //).trim()
-                
-
-                    // Choose repository based on version
-                    //def repository = version.contains('SNAPSHOT') ? 'node.js'
-
-                    // Derive artifactId and JAR file
-                    def jarFile = sh(
-                        script: "ls target/*.jar | grep simple-node-js-react-npm-app | head -n 1",
-                        returnStdout: true
-                    ).trim()
-
-                    def artifactId = 'simple-node-js-react-npm-app' // This must match the filename and pom.xml <artifactId>
-
-                    // Upload to Nexus
-                    nexusArtifactUploader(
-                        nexusVersion: 'nexus3',
-                        protocol: 'http',
-                        nexusUrl: 'nexus:8081',
-                        groupId: 'com.example',
-                        version: version,
-                        repository: repository,
-                        credentialsId: 'nexus-creds',
-                        artifacts: [
-                            [
-                                artifactId: artifactId,
-                                classifier: '',
-                                file: jarFile,
-                                type: 'jar'
-                            ]
-                        ]
-                    )
-                }
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: "nexus:8081",
+                    groupId: 'com.example',
+                    version: '0.1.0',
+                    repository: repository,
+                    credentialsId: "nexus-creds",
+                    artifacts: [
+                        [artifactId: 'my-node-app', classifier: '', file: 'dist/my-node-app.tar.gz', type: 'tar.gz']
+                    ]
+                )
             }
-         }
-        
+        }
     }
 }
+                
+        
+    
+
     
 
     
